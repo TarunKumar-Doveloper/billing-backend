@@ -1,7 +1,6 @@
 # billing-backend
 
-> A brief one-liner about your project.
-
+> A robust backend service offering RESTful APIs for managing customer accounts, invoicing, payments, and subscription-based billing.
 ---
 
 ## 📌 Table of Contents
