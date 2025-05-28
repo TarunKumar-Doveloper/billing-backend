@@ -118,6 +118,102 @@ namespace billing_backend.Services
             }
         }
 
+        public async Task<BaseResponse> ResendLoginOtp(string Email)
+        {
+            try
+            {
+                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == Email.ToLower().Trim());
+
+                if (user == null)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.AccountNotFound };
+
+                var Success = await GenerateOtp(user.Email);
+
+                if (Success == null)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.OtpNotGenerated };
+
+                return new BaseResponse { Success = true, Message = ResponseMessage.OtpSend };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<BaseResponse> ChangePassword(Guid LoggedInUserId, ChangePasswordVM entity)
+        {
+            try
+            {
+                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == entity.EmailId.ToLower().Trim());
+
+                if (user == null)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.AccountNotFound };
+
+                UserMaster ExistingDetail = user;
+
+                if (user.Password == entity.CurrentPassword)
+                {
+                    var EncryptPwd = entity.NewPassword;
+                    user.Password = EncryptPwd;
+
+                    await _dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    return new BaseResponse { Success = false, Message = ResponseMessage.IncorrectPassword };
+                }
+                return new BaseResponse { Success = true, Message = ResponseMessage.PasswordChange };
+            }
+            catch(Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<BaseResponse> ForgetPassword(Guid LoggedInUserId, ForgetPasswordVM entity)
+        {
+            try
+            {
+                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Id == LoggedInUserId);
+
+                if (user == null)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.AccountNotFound };
+
+                user.Password = entity.NewPassword;
+
+                await _dbContext.SaveChangesAsync();
+
+                return new BaseResponse { Success = true, Message = ResponseMessage.ForgotPassword };
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<BaseResponse> EmailSendOtp(SentOtpEmailVM entity)
+        {
+            try
+            {
+                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == entity.Email.ToLower().Trim());
+
+                if (user == null)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.AccountNotFound };
+
+                if (!user.IsActive)
+                    return new BaseResponse { Success = false, Message = ResponseMessage.InactiveUser };
+
+                var Success = await GenerateOtp(user.Email);
+
+                return new BaseResponse { Success = true, Message = ResponseMessage.OtpSend };
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         #region Common Methods
 
         public async Task<string> GenerateOtp(string Email)

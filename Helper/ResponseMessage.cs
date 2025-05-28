@@ -12,5 +12,7 @@
         public static string OtpExpired = "The OTP has expired. Please request a new OTP.";
         public static string TokenGenerationFailed = "Failed to generate authentication token. Please try again.";
         public static string VerifyOTP = "OTP verified successfully.";
+        public static string PasswordChange = "Password changed successfully.";
+        public static string ForgotPassword = "Forget password successfully.";
     }
 }
