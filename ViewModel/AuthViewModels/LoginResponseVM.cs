@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace billing_backend.ViewModel
+namespace billing_backend.ViewModel.AuthViewModels
 {
     public class LoginResponseVM
     {
@@ -19,7 +19,7 @@ namespace billing_backend.ViewModel
         private string _email;
 
         [Required(ErrorMessage = "Please enter a valid email address.")]
-        [DataType(System.ComponentModel.DataAnnotations.DataType.EmailAddress, ErrorMessage = "Please enter a valid email address.")]
+        [DataType(DataType.EmailAddress, ErrorMessage = "Please enter a valid email address.")]
         public string Email
         {
             get { return _email; }

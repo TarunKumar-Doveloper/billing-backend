@@ -3,6 +3,7 @@ using billing_backend.Helper;
 using billing_backend.Interfaces;
 using billing_backend.Models;
 using billing_backend.ViewModel;
+using billing_backend.ViewModel.AuthViewModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace billing_backend.Services
@@ -35,9 +36,9 @@ namespace billing_backend.Services
                 if (!user.IsActive)
                     return new BaseResponse { Success = false, Message = ResponseMessage.InactiveUser };
 
-                var Success = await GenerateOtp(user.Email);
+                var otpGenrated = await GenerateOtp(user.Email);
 
-                if (Success == null)
+                if (otpGenrated == null)
                     return new BaseResponse { Success = false, Message = ResponseMessage.OtpNotGenerated };
 
                 return new BaseResponse { Success = true, Message = ResponseMessage.OtpSend };
@@ -144,7 +145,7 @@ namespace billing_backend.Services
         {
             try
             {
-                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == entity.EmailId.ToLower().Trim());
+                var user = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Id == LoggedInUserId);
 
                 if (user == null)
                     return new BaseResponse { Success = false, Message = ResponseMessage.AccountNotFound };
@@ -153,8 +154,7 @@ namespace billing_backend.Services
 
                 if (user.Password == entity.CurrentPassword)
                 {
-                    var EncryptPwd = entity.NewPassword;
-                    user.Password = EncryptPwd;
+                    user.Password = entity.NewPassword;
 
                     await _dbContext.SaveChangesAsync();
                 }
@@ -222,16 +222,29 @@ namespace billing_backend.Services
 
             var userDetail = await _dbContext.UserMaster.FirstOrDefaultAsync(x => x.Email.ToLower().Trim() == Email.ToLower().Trim());
 
-            var otpEntry = new OtpMaster
-            {
-                Id = Guid.NewGuid(),
-                UserId = userDetail.Id,
-                OtpCode = otp,
-                ExpiryTime = DateTime.UtcNow.AddMinutes(5),
-                IsUsed = false
-            };
+            var existingOtp = await _dbContext.OtpMaster.FirstOrDefaultAsync(x => x.UserId == userDetail.Id);
 
-            await _dbContext.AddAsync(otpEntry);
+            if (existingOtp != null)
+            {
+                existingOtp.OtpCode = otp;
+                existingOtp.ExpiryTime = DateTime.UtcNow.AddMinutes(5);
+                existingOtp.IsUsed = false;
+
+                _dbContext.OtpMaster.Update(existingOtp);
+            }
+            else
+            {
+                var otpEntry = new OtpMaster
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userDetail.Id,
+                    OtpCode = otp,
+                    ExpiryTime = DateTime.UtcNow.AddMinutes(5),
+                    IsUsed = false
+                };
+
+                await _dbContext.OtpMaster.AddAsync(otpEntry);
+            }
 
             await _dbContext.SaveChangesAsync();
 

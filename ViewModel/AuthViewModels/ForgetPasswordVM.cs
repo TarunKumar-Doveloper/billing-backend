@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace billing_backend.ViewModel
+namespace billing_backend.ViewModel.AuthViewModels
 {
     public class ForgetPasswordVM
     {

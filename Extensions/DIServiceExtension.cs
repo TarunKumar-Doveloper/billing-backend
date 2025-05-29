@@ -14,6 +14,7 @@ namespace billing_backend.Extensions
             #region Dependency Injection of Repository
 
             services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             #endregion
 

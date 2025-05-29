@@ -1,5 +1,6 @@
 ﻿using billing_backend.Interfaces;
 using billing_backend.ViewModel;
+using billing_backend.ViewModel.AuthViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;

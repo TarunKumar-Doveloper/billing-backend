@@ -1,5 +1,6 @@
 ﻿using billing_backend.Helper;
 using billing_backend.ViewModel;
+using billing_backend.ViewModel.AuthViewModels;
 using Microsoft.AspNetCore.Identity.Data;
 
 namespace billing_backend.Interfaces

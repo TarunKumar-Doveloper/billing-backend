@@ -11,5 +11,6 @@ namespace billing_backend.DataContext
         public DbSet<BillMaster> BillMaster { get; set; }
         public DbSet<UserMaster> UserMaster { get; set; }
         public DbSet<OtpMaster> OtpMaster { get; set; }
+        public DbSet<ProductMaster> ProductMaster { get; set; }
     }
 }

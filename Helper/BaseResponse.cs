@@ -47,4 +47,28 @@ namespace billing_backend.Helper
         public int Code { get; set; }
         public T Data { get; set; }
     }
+
+    public class BaseResponseModel<T>
+    {
+        private bool _success;
+
+        [Required]
+        public bool Success
+        {
+            get => _success;
+            set
+            {
+                _success = value;
+                Code = _success ? 200 : 400;
+            }
+        }
+
+        [Required]
+        public string Message { get; set; }
+
+        [Required]
+        public int Code { get; set; }
+        public int TotalRecords { get; set; }
+        public T Data { get; set; }
+    }
 }

@@ -14,5 +14,18 @@
         public static string VerifyOTP = "OTP verified successfully.";
         public static string PasswordChange = "Password changed successfully.";
         public static string ForgotPassword = "Forget password successfully.";
+
+
+        //Common messages
+        public static string DateRetrived = "Data retrived successfully.";
+        public static string DataNotFound = "Data not found.";
+
+
+        // Product related messages
+        public static string ProductAdded = "Product added successfully.";
+        public static string ProductUpdated = "Product updated successfully.";
+        public static string ProductDeleted = "Product deleted successfully.";
+        public static string ProductNotFound = "Product not found.";
+        
     }
 }
